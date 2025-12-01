@@ -1,31 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { 
   StyleSheet, 
   Text, 
   View, 
   TouchableOpacity, 
-  Animated,
-  Platform 
+  Animated
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function App() {
-  const [message, setMessage] = useState('');
   const [showMessage, setShowMessage] = useState(false);
-  const fadeAnim = new Animated.Value(0);
+  const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const handleClick = () => {
-    setMessage('Hi mobile world!');
-    setShowMessage(true);
-
-    // Animate message
-    fadeAnim.setValue(0);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    if (!showMessage) {
+      setShowMessage(true);
+      fadeAnim.setValue(0);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
   };
 
   return (
@@ -37,24 +34,21 @@ export default function App() {
     >
       <StatusBar style="light" />
       <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.title}>Hi World! 👋</Text>
-          <Text style={styles.subtitle}>Your first multiplatform mobile app</Text>
-          
-          <TouchableOpacity 
-            style={styles.button}
-            onPress={handleClick}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.buttonText}>Click Me!</Text>
-          </TouchableOpacity>
+        <Text style={styles.title}>Hi World! 👋</Text>
+        
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={handleClick}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.buttonText}>Click Me!</Text>
+        </TouchableOpacity>
 
-          {showMessage && (
-            <Animated.View style={[styles.messageContainer, { opacity: fadeAnim }]}>
-              <Text style={styles.message}>{message}</Text>
-            </Animated.View>
-          )}
-        </View>
+        {showMessage && (
+          <Animated.View style={[styles.messageContainer, { opacity: fadeAnim }]}>
+            <Text style={styles.message}>Hi mobile world!</Text>
+          </Animated.View>
+        )}
       </View>
     </LinearGradient>
   );
@@ -68,37 +62,17 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-  },
-  content: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 20,
-    padding: 40,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.1,
-    shadowRadius: 32,
-    elevation: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   title: {
     fontSize: 48,
     fontWeight: '700',
     color: 'white',
-    marginBottom: 15,
+    marginBottom: 40,
     textAlign: 'center',
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 4,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: 'white',
-    opacity: 0.9,
-    marginBottom: 30,
-    textAlign: 'center',
-    fontWeight: '300',
   },
   button: {
     backgroundColor: 'white',
@@ -110,6 +84,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 15,
     elevation: 4,
+    marginBottom: 30,
   },
   buttonText: {
     color: '#667eea',
@@ -117,22 +92,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   messageContainer: {
-    marginTop: 20,
-    minHeight: 30,
+    minHeight: 40,
+    justifyContent: 'center',
   },
   message: {
     color: 'white',
     fontSize: 20,
     fontWeight: '500',
     textAlign: 'center',
-  },
-  platformInfo: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  platformText: {
-    color: 'white',
-    opacity: 0.8,
-    fontSize: 14,
   },
 });
